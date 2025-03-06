@@ -1,6 +1,5 @@
 ##### Library dependencies
 library(flowCore)
-library(ggcyto)
 
 #####Functions to run flowCore metadata search
 flpaths_FCS_list <- function(fld_path) {list.files(path=fld_path, pattern = ".fcs", recursive = T, full.names = T)}
@@ -95,7 +94,7 @@ make_lymph_pop_data <- function(file) {
     kmf_results <- filter(qcFinal_fF, kmf)
     debris_filtered <- split(qcFinal_fF, kmf_results)
     
-    autoplot(debris_filtered$lymph, "Am.Cyan.A")
+    
     kmf_cd3 <- kmeansFilter("Am.Cyan.A" = c("CD3neg","CD3pos"), filterId = "CD3" )
     cd3_filter <- filter(debris_filtered$lymph, kmf_cd3)
     CD3_pops <- split(debris_filtered$lymph, cd3_filter)
@@ -167,9 +166,7 @@ grab_df <- function(exp, df) {
 make_5_num_summary_per_col <- function(df) {
   colname <- c("Min", "Lower Hinge", "Median", "Upper Hinge", "Max")
   rowname <- names(df) |> grep(pattern = "CD", value = T, invert = F)
-  print(rowname)
   ignore <- names(df) |> grep(pattern = "CD", value = T, invert = T)
-  print(ignore)
   dim_names <- list(rowname, colname)
   fivenum_df <- matrix(nrow = length(rowname), ncol = length(colname), dimnames = dim_names) |> as.data.frame()
   counter = 1
@@ -218,8 +215,8 @@ convert_char_num <- function(df, ignore) {
   return(df)
 }
 
-#Main()
-dir <- "~/Downloads/Flow_studies/Test study/"
+#Main
+dir <- "~/Documents/Proj/DS/FCM/Flow_studies/"
 exp_lymph_raw_df <-flpaths_FCS_list(dir) |> lapply(FUN = make_lymph_pop_data) |> make_lymphDF()
 exp_lymph_perc_df <- make_percentages_across_rows(exp_lymph_raw_df)
 exp_names <- unique(exp_lymph_raw_df$Experiment)
@@ -229,4 +226,3 @@ grouped_exp_raw_lst <- lapply(X = exp_names, FUN = grab_df, df = exp_lymph_raw_d
 grouped_exp_perc_lst <- lapply(X = exp_names, FUN = grab_df, df = exp_lymph_perc_df) |> `names<-`(value = exp_names)
 raw_five_num_lst <- lapply(X = grouped_exp_raw_lst, FUN = make_5_num_summary_per_col) |> `names<-`(value = exp_names)
 perc_five_num_lst <- lapply(X = grouped_exp_perc_lst, FUN = make_5_num_summary_per_col) |> `names<-`(value = exp_names)
-etime <- Sys.time()
