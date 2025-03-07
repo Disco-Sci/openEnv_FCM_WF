@@ -1,7 +1,7 @@
 # openEnv_FCM_WF
 
 ## Purpose: 
-This repo contains my development of an automated data analysis workflow for flow cytometry files. I used open resources to help me build workflows and tools. 
+This repo contains the development of an automated data analysis workflow for flow cytometry files. I used open resources to help me build workflows and tools. 
 
 ## 05MAR2025 update
 
